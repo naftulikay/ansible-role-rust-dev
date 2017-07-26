@@ -1,2 +1,3 @@
 ---
-gossfile: {}
+gossfile:
+  'goss.d/*.yml': {}

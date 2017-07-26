@@ -10,29 +10,14 @@
 - name: build
   hosts: localhost
   roles:
-    - role: time
+    - role: rust-dev
 
 - name: test
   hosts: localhost
-  vars:
-    is_ntp: |-
-      {{ ansible_distribution|lower == "ubuntu" and ansible_distribution_release|lower == "xenial" }}
-    ntp_package: ntp
-    time_service: |-
-      {% if ansible_distribution_release|lower == "xenial" -%}
-        timesyncd
-      {%- elif ansible_distribution_release|lower == "trusty" -%}
-        ntp
-      {%- else -%}
-        ntpd
-      {%- endif -%}
+  vars: {}
   roles:
     - role: degoss
       degoss_no_clean: true
       goss_file: goss.yml
       goss_addtl_dirs: [goss.d/]
-      goss_env_vars:
-        is_ntp: "{{ is_ntp }}"
-        ntp_package: "{{ ntp_package }}"
-        time_service: "{{ time_service }}"
-        time_server_pool_name: "{{ ansible_distribution|lower }}"
+      goss_env_vars: {}

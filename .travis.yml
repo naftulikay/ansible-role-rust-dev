@@ -10,7 +10,7 @@ services:
 
 env:
   global: # applied to every run
-    ROLE_NAME: time
+    ROLE_NAME: rust-dev
 
   matrix: # each entry is its own run
     - IMAGE_NAME: naftulikay/centos-vm:7
