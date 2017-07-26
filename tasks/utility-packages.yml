@@ -1,0 +1,29 @@
+---
+- name: refresh apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  when: os_name == "ubuntu"
+
+- name: install curl
+  package: name="{{ curl_package_name }}" state=present
+
+- name: install rsync
+  package: name="{{ rsync_package_name }}" state=present
+
+- name: install ssh client
+  package: name="{{ ssh_package_name }}" state=present
+
+# install python required packages on trusty
+- name: install python SSL support packages
+  package: name="{{ item }}" state=present
+  with_items:
+    - ca-certificates
+    - python-dev
+    - python-openssl
+    - python-pip
+    - python-pyasn1
+    - python-urllib3
+  when: os_release == "trusty"
+
+- name: install ndg-httpsclient pip module
+  pip: name=ndg-httpsclient state=present
+  when: os_release == "trusty"

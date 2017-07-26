@@ -1,1 +1,62 @@
 ---
+- name: fail when user is not defined
+  fail: msg="rust_user is not defined or empty, it must be set."
+  when: (rust_user is not defined) or (not rust_user)
+
+# set facts to reliably determine os
+- name: discover operating system
+  include: discover/os.yml
+
+# load per-os and per distro variables
+- name: load variables
+  include_vars: "{{ var_loop_item }}"
+  with_items:
+    - "{{ os_name }}/common.yml"
+    - "{{ os_name }}/{{ os_release }}.yml"
+  loop_control: { loop_var: var_loop_item }
+
+- name: discover rust facts
+  include: discover/rust.yml
+
+- name: install utility packages
+  include: utility-packages.yml
+
+- name: fetch rustup installer
+  get_url:
+    url: https://sh.rustup.rs
+    dest: "{{ rustup_tmp_installer }}"
+    mode: "0755"
+  when: not rustup_installed
+
+- name: install rustup as the user
+  command: "{{ rustup_tmp_installer }} -y"
+  become: true
+  become_user: "{{ rust_user }}"
+  when: not rustup_installed
+
+- name: generate rustup completions
+  command: "{{ rust_user_home }}/.cargo/bin/rustup completions bash"
+  become: true
+  become_user: "{{ rust_user }}"
+  register: rustup_completions
+  changed_when: false
+
+- name: write rustup completions
+  copy:
+    content: "{{ rustup_completions.stdout }}"
+    dest: /etc/bash_completion.d/rustup
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: sync man pages
+  synchronize:
+    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
+    dest: "/usr/local/share/man/man1/"
+
+- name: install additional system packages
+  package: name="{{ item }}" state=present
+  with_items: "{{ rust_addtl_system_packages }}"
+
+- name: remove temp installer
+  file: name="{{ rustup_tmp_installer }}" state=absent

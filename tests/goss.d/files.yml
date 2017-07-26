@@ -1,0 +1,6 @@
+---
+file:
+  '/home/vagrant/.rustup': { exists: true }
+  '/home/vagrant/.cargo': { exists: true }
+  '/home/vagrant/.cargo/bin/cargo': { exists: true }
+  '/home/vagrant/.cargo/bin/rustc': { exists: true }
