@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   name: rust-dev
-  version: 'v0.0.1'
+  version: 'v1.0.0'
   author: Naftuli Kay
   description: Install and configure a Rust development environment on a system.
 
