@@ -11,6 +11,7 @@
   hosts: localhost
   roles:
     - role: rust-dev
+      rust_user: vagrant
 
 - name: test
   hosts: localhost

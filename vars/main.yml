@@ -1,1 +1,9 @@
 ---
+curl_package_name: curl
+
+rsync_package_name: rsync
+
+rust_version: stable
+rustup_tmp_installer: /tmp/rustup.sh
+
+ssh_package_name: openssh-client
