@@ -1,2 +1,3 @@
 ---
+rust_c_compiler_package: gcc
 rust_addtl_system_packages: []

@@ -1,0 +1,4 @@
+---
+package:
+  'gcc':
+    installed: true
