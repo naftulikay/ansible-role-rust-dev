@@ -48,15 +48,22 @@
     mode: "0755"
     owner: root
     group: root
+  become: true
 
 - name: sync man pages
   synchronize:
     src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
     dest: "/usr/local/share/man/man1/"
+  become: true
+
+- name: install c compiler
+  package: name="{{ rust_c_compiler_package }}" state=present
+  become: true
 
 - name: install additional system packages
   package: name="{{ item }}" state=present
   with_items: "{{ rust_addtl_system_packages }}"
+  become: true
 
 - name: remove temp installer
   file: name="{{ rustup_tmp_installer }}" state=absent
