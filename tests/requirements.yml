@@ -1,4 +1,3 @@
 ---
 - name: degoss
   src: naftulikay.degoss
-  version: v1.2.1
