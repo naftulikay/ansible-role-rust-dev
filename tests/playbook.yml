@@ -18,7 +18,8 @@
   vars: {}
   roles:
     - role: degoss
-      degoss_no_clean: true
+      degoss_clean: false
+      degoss_debug: true
       goss_file: goss.yml
-      goss_addtl_dirs: [goss.d/]
+      goss_addtl_dirs: [goss.d]
       goss_env_vars: {}

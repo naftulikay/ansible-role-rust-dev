@@ -5,7 +5,7 @@
 
 # set facts to reliably determine os
 - name: discover operating system
-  include: discover/os.yml
+  include_tasks: discover/os.yml
 
 # load per-os and per distro variables
 - name: load variables
@@ -16,10 +16,10 @@
   loop_control: { loop_var: var_loop_item }
 
 - name: discover rust facts
-  include: discover/rust.yml
+  include_tasks: discover/rust.yml
 
 - name: install utility packages
-  include: utility-packages.yml
+  include_tasks: utility-packages.yml
 
 - name: fetch rustup installer
   get_url:
