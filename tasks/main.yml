@@ -3,17 +3,27 @@
   fail: msg="rust_user is not defined or empty, it must be set."
   when: (rust_user is not defined) or (not rust_user)
 
-# set facts to reliably determine os
-- name: discover operating system
-  include_tasks: discover/os.yml
-
 # load per-os and per distro variables
-- name: load variables
-  include_vars: "{{ var_loop_item }}"
-  with_items:
-    - "{{ os_name }}/common.yml"
-    - "{{ os_name }}/{{ os_release }}.yml"
-  loop_control: { loop_var: var_loop_item }
+- name: load ubuntu distribution variables
+  include_vars: ubuntu/common.yml
+  when: is_ubuntu_derivative
+
+- name: load ubuntu distribution release variables
+  include_vars: |-
+    {%- if is_ubuntu_trusty_derivative -%}
+      ubuntu/trusty.yml
+    {%- elif is_ubuntu_xenial_derivative -%}
+      ubuntu/xenial.yml
+    {%- endif -%}
+  when: is_ubuntu_derivative and (is_ubuntu_trusty_derivative or is_ubuntu_xenial_derivative)
+
+- name: load redhat distribution variables
+  include_vars: redhat/common.yml
+  when: is_redhat_derivative
+
+- name: load redhat distribution release variables
+  include_vars: redhat/rhel7.yml
+  when: is_redhat_derivative
 
 - name: discover rust facts
   include_tasks: discover/rust.yml

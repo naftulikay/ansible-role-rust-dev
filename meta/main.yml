@@ -13,5 +13,10 @@ galaxy_info:
       versions: [7]
     - name: Ubuntu
       versions: [trusty, xenial]
+    - name: elementary OS
+      versions: [loki]
 
   galaxy_tags: [rust,rust-lang]
+
+dependencies:
+  - role: naftulikay.base
