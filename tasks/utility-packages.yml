@@ -1,7 +1,10 @@
 ---
 - name: refresh apt cache
   apt: update_cache=yes cache_valid_time=3600
-  when: os_name == "ubuntu"
+  when: is_ubuntu_derivative
+
+- name: install git
+  package: name=git state=present
 
 - name: install curl
   package: name="{{ curl_package_name }}" state=present
@@ -22,8 +25,8 @@
     - python-pip
     - python-pyasn1
     - python-urllib3
-  when: os_release == "trusty"
+  when: is_ubuntu_trusty_derivative
 
 - name: install ndg-httpsclient pip module
   pip: name=ndg-httpsclient state=present
-  when: os_release == "trusty"
+  when: is_ubuntu_trusty_derivative
