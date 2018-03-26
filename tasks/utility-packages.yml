@@ -2,18 +2,23 @@
 - name: refresh apt cache
   apt: update_cache=yes cache_valid_time=3600
   when: is_ubuntu_derivative
+  become: true
 
 - name: install git
   package: name=git state=present
+  become: true
 
 - name: install curl
   package: name="{{ curl_package_name }}" state=present
+  become: true
 
 - name: install rsync
   package: name="{{ rsync_package_name }}" state=present
+  become: true
 
 - name: install ssh client
   package: name="{{ ssh_package_name }}" state=present
+  become: true
 
 # install python required packages on trusty
 - name: install python SSL support packages
@@ -26,7 +31,9 @@
     - python-pyasn1
     - python-urllib3
   when: is_ubuntu_trusty_derivative
+  become: true
 
 - name: install ndg-httpsclient pip module
   pip: name=ndg-httpsclient state=present
   when: is_ubuntu_trusty_derivative
+  become: true
