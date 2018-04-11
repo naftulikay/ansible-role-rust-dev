@@ -1,6 +1,5 @@
 ---
 dist: trusty
-sudo: required
 
 matrix:
   fast_finish: true
@@ -9,16 +8,13 @@ services:
   - docker
 
 env:
-  global: # applied to every run
-    ROLE_NAME: rust-dev
-
   matrix: # each entry is its own run
-    - IMAGE_NAME: naftulikay/centos-vm:7
-    - IMAGE_NAME: naftulikay/xenial-vm:latest
-    - IMAGE_NAME: naftulikay/trusty-vm:latest
-    - IMAGE_NAME: naftulikay/loki-vm:latest
+    - IMAGE: centos7
+    - IMAGE: xenial
+    - IMAGE: trusty
+    - IMAGE: loki
 
-script: make test-clean
+script: make test
 
 notifications:
   email:
