@@ -10,7 +10,7 @@
 - name: build
   hosts: localhost
   roles:
-    - role: rust-dev
+    - role: default
       rust_user: docker
 
 - name: test
