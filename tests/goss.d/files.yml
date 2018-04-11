@@ -1,6 +1,9 @@
 ---
 file:
-  '/home/vagrant/.rustup': { exists: true }
-  '/home/vagrant/.cargo': { exists: true }
-  '/home/vagrant/.cargo/bin/cargo': { exists: true }
-  '/home/vagrant/.cargo/bin/rustc': { exists: true }
+  '/home/docker/.rustup': { exists: true }
+  '/home/docker/.cargo': { exists: true }
+  '/home/docker/.cargo/bin/cargo': { exists: true }
+  '/home/docker/.cargo/bin/rustc': { exists: true }
+
+  '/usr/local/share/man/man1/cargo.1': { exists: true }
+  '/usr/local/share/man/man1/rustc.1': { exists: true }
