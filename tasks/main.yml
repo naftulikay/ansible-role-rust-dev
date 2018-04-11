@@ -64,6 +64,7 @@
   synchronize:
     src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
     dest: "/usr/local/share/man/man1/"
+  delegate_to: "{{ inventory_hostname }}"
   become: true
 
 - name: install c compiler
