@@ -1,0 +1,16 @@
+---
+- name: determine local user name
+  hosts: all
+  tasks:
+    - name: detect local user
+      local_action: command whoami
+      register: host_user
+
+    - name: set local user fact
+      set_fact: local_user={{ host_user.stdout }}
+
+- name: apply config locally
+  hosts: all
+  roles:
+    - role: rust-dev
+      rust_user: "{{ local_user }}"

@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+.DEFAULT_GOAL := apply
+.PHONY: apply
+
 DEFAULT_IMAGE:=centos7
 IMAGE:=$(shell echo "$${IMAGE:-$(DEFAULT_IMAGE)}")
 
@@ -18,3 +21,15 @@ test: start
 	@docker exec $(IMAGE) ansible-galaxy install -r /etc/ansible/roles/default/tests/requirements.yml
 	@docker exec $(IMAGE) env ANSIBLE_FORCE_COLOR=yes \
 		ansible-playbook /etc/ansible/roles/default/tests/playbook.yml
+
+prepare-apply:
+	@mkdir -p target/ .ansible/galaxy-roles
+	@rsync --exclude=.ansible/galaxy-roles -a ./ .ansible/galaxy-roles/rust-dev/
+	@ansible-galaxy install -p .ansible/galaxy-roles -r tests/requirements.yml
+
+
+apply: prepare-apply
+	@ansible-playbook -i localhost, -c local --ask-become-pass local.yml
+
+apply-ssh: prepare-apply
+	@ansible-playbook -i localhost, --ask-become-pass local.yml
