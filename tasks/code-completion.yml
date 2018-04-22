@@ -1,0 +1,37 @@
+---
+- name: detect presence of racer
+  command: which racer
+  environment:
+    PATH: "{{ rust_user_path }}"
+  changed_when: false
+  failed_when: false
+  register: racer
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: install racer
+  command: "cargo install racer"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  register: racer_exec
+  when: racer.rc != 0
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: detect presence of rls
+  command: which rls
+  environment:
+    PATH: "{{ rust_user_path }}"
+  changed_when: false
+  failed_when: false
+  register: rls
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: install rls
+  command: "rustup component add rls-preview rust-analysis rust-src"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  when: rls.rc != 0
+  become: true
+  become_user: "{{ rust_user }}"

@@ -20,7 +20,7 @@ test: start
 	@docker exec $(IMAGE) wait-for-boot
 	@docker exec $(IMAGE) ansible-galaxy install -r /etc/ansible/roles/default/tests/requirements.yml
 	@docker exec $(IMAGE) env ANSIBLE_FORCE_COLOR=yes \
-		ansible-playbook /etc/ansible/roles/default/tests/playbook.yml
+		ansible-playbook $(shell echo $$ANSIBLE_ARGS) /etc/ansible/roles/default/tests/playbook.yml
 
 prepare-apply:
 	@mkdir -p target/ .ansible/galaxy-roles

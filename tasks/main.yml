@@ -44,6 +44,12 @@
   become_user: "{{ rust_user }}"
   when: not rustup_installed
 
+- name: set default toolchain
+  command: "rustup default stable"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  when: not rustup_installed
+
 - name: generate rustup completions
   command: "{{ rust_user_home }}/.cargo/bin/rustup completions bash"
   become: true
@@ -96,3 +102,7 @@
 
 - name: remove temp installer
   file: name="{{ rustup_tmp_installer }}" state=absent
+
+- name: install code completion tools
+  include_tasks: code-completion.yml
+  when:  rust_code_completion | default(true) | bool

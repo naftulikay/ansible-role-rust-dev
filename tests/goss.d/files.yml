@@ -5,5 +5,8 @@ file:
   '/home/docker/.cargo/bin/cargo': { exists: true }
   '/home/docker/.cargo/bin/rustc': { exists: true }
 
+  '/home/docker/.cargo/bin/racer': { exists: true }
+  '/home/docker/.cargo/bin/rls': { exists: true }
+
   '/usr/local/share/man/man1/cargo.1': { exists: true }
   '/usr/local/share/man/man1/rustc.1': { exists: true }
