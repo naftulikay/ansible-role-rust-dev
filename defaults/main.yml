@@ -1,3 +1,6 @@
 ---
 rust_c_compiler_package: gcc
 rust_addtl_system_packages: []
+rust_code_completion: true
+
+rust_user_path: "/home/{{ rust_user }}/.local/bin:/home/{{ rust_user }}/.cargo/bin:/usr/local/bin/:/usr/bin:/bin"
