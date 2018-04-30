@@ -6,3 +6,8 @@ package:
   'curl': { installed: true }
   'git': { installed: true }
   'rsync': { installed: true }
+
+  'clang': { installed: true }
+  'cmake': { installed: true }
+  'nasm':  { installed: true }
+  'yasm':  { installed: true }

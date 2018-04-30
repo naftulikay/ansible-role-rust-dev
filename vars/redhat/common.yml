@@ -1,2 +1,5 @@
 ---
+rust_clang_devel_package: clang-devel
+rust_yasm_devel_package:  yasm-devel
+
 ssh_package_name: openssh-clients

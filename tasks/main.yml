@@ -28,6 +28,9 @@
 - name: discover rust facts
   include_tasks: discover/rust.yml
 
+- name: install compilers
+  include_tasks: compilers.yml
+
 - name: install utility packages
   include_tasks: utility-packages.yml
 
@@ -88,11 +91,6 @@
     dest: "/usr/local/share/man/man1/"
   delegate_to: "{{ inventory_hostname }}"
   when: not is_connection_local
-  become: true
-
-
-- name: install c compiler
-  package: name="{{ rust_c_compiler_package }}" state=present
   become: true
 
 - name: install additional system packages

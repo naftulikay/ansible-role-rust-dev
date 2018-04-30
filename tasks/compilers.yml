@@ -1,0 +1,25 @@
+---
+- name: install c compiler
+  package: name="{{ rust_c_compiler_package }}" state=present
+  become: true
+
+- name: install assemblers
+  package: name="{{ item }}" state=present
+  with_items:
+    - "{{ rust_nasm_package }}"
+    - "{{ rust_yasm_package }}"
+    - "{{ rust_yasm_devel_package }}"
+  become: true
+
+- name: install clang
+  package: name="{{ item }}" state=present
+  with_items:
+    - "{{ rust_clang_package }}"
+    - "{{ rust_clang_devel_package }}"
+  become: true
+
+- name: install cmake
+  package: name="{{ item }}" state=present
+  with_items:
+    - "{{ rust_cmake_package }}"
+  become: true

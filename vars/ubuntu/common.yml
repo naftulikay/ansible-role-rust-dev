@@ -1,1 +1,3 @@
 ---
+rust_clang_devel_package: clang-dev
+rust_yasm_devel_package:  yasm-dev

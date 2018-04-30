@@ -4,6 +4,12 @@ curl_package_name: curl
 rsync_package_name: rsync
 
 rust_version: stable
+
+rust_clang_package: clang
+rust_cmake_package: cmake
+rust_nasm_package: nasm
+rust_yasm_package: yasm
+
 rustup_tmp_installer: /tmp/rustup.sh
 
 ssh_package_name: openssh-client
