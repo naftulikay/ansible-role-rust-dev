@@ -8,13 +8,14 @@
   register: racer
   become: true
   become_user: "{{ rust_user }}"
+  when: rust_install_racer | bool
 
 - name: install racer
   command: "cargo install racer"
   environment:
     PATH: "{{ rust_user_path }}"
   register: racer_exec
-  when: racer.rc != 0
+  when: rust_install_racer and racer.rc != 0
   become: true
   become_user: "{{ rust_user }}"
 
@@ -27,11 +28,12 @@
   register: rls
   become: true
   become_user: "{{ rust_user }}"
+  when: rust_install_rls | bool
 
 - name: install rls
   command: "rustup component add rls-preview rust-analysis rust-src"
   environment:
     PATH: "{{ rust_user_path }}"
-  when: rls.rc != 0
+  when: rust_install_rls and rls.rc != 0
   become: true
   become_user: "{{ rust_user }}"
