@@ -4,25 +4,21 @@
   when: is_ubuntu_derivative
   become: true
 
-- name: install git
-  package: name=git state=present
-  become: true
-
-- name: install curl
-  package: name="{{ curl_package_name }}" state=present
-  become: true
-
-- name: install rsync
-  package: name="{{ rsync_package_name }}" state=present
-  become: true
-
-- name: install ssh client
-  package: name="{{ ssh_package_name }}" state=present
+- name: install build utilities
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ curl_package_name }}"
+    - "{{ rsync_package_name }}"
+    - "{{ ssh_package_name }}"
   become: true
 
 # install python required packages on trusty
 - name: install python SSL support packages
-  package: name="{{ item }}" state=present
+  package:
+    name: "{{ item }}"
+    state: present
   with_items:
     - ca-certificates
     - python-dev

@@ -7,11 +7,13 @@
   register: rust_user_home_check
 
 - name: set rust user home
-  set_fact: rust_user_home="{{ rust_user_home_check.stdout_lines | first }}"
+  set_fact:
+    rust_user_home: "{{ rust_user_home_check.stdout_lines | first }}"
 
 - name: check if rustup is installed
-  command: ls "{{ rust_user_home }}/.rustup"
+  command: "{{ rust_user_home }}/.cargo/bin/rustup --version"
   register: rustup_check
+  become: true
   become_user: "{{ rust_user }}"
   changed_when: false
   failed_when: false

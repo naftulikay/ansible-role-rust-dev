@@ -3,26 +3,8 @@
   fail: msg="rust_user is not defined or empty, it must be set."
   when: (rust_user is not defined) or (not rust_user)
 
-# load per-os and per distro variables
-- name: load ubuntu distribution variables
-  include_vars: ubuntu/common.yml
-  when: is_ubuntu_derivative
-
-- name: load ubuntu distribution release variables
-  include_vars: |-
-    {%- if is_ubuntu_trusty_derivative -%}
-      ubuntu/trusty.yml
-    {%- elif is_ubuntu_xenial_derivative -%}
-      ubuntu/xenial.yml
-    {%- endif -%}
-  when: is_ubuntu_derivative and (is_ubuntu_trusty_derivative or is_ubuntu_xenial_derivative)
-
-- name: load redhat distribution variables
-  include_vars: redhat/common.yml
-  when: is_redhat_derivative
-
-- name: load redhat distribution release variables
-  include_vars: redhat/rhel7.yml
+- name: load rhel variables
+  include_vars: redhat.yml
   when: is_redhat_derivative
 
 - name: discover rust facts
@@ -92,12 +74,9 @@
 
 
 - name: install c compiler
-  package: name="{{ rust_c_compiler_package }}" state=present
-  become: true
-
-- name: install additional system packages
-  package: name="{{ item }}" state=present
-  with_items: "{{ rust_addtl_system_packages }}"
+  package:
+    name: "{{ rust_c_compiler_package }}"
+    state=: present
   become: true
 
 - name: remove temp installer

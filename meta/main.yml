@@ -3,6 +3,7 @@ galaxy_info:
   name: rust-dev
   author: Naftuli Kay
   description: Install and configure a Rust development environment on a system.
+  src: naftulikay.rust-dev
 
   license: MIT
 
@@ -12,9 +13,7 @@ galaxy_info:
     - name: EL
       versions: [7]
     - name: Ubuntu
-      versions: [trusty, xenial]
-    - name: elementary OS
-      versions: [loki]
+      versions: [bionic, trusty, xenial]
 
   galaxy_tags: [rust,rust-lang]
 

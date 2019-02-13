@@ -1,9 +1,7 @@
 ---
 rust_c_compiler_package: gcc
-rust_addtl_system_packages: []
-rust_code_completion: true
+rust_user_path: "/home/{{ rust_user }}/.cargo/bin:/home/{{ rust_user }}/.local/bin:/usr/local/bin/:/usr/bin:/bin"
 
-rust_user_path: "/home/{{ rust_user }}/.local/bin:/home/{{ rust_user }}/.cargo/bin:/usr/local/bin/:/usr/bin:/bin"
-
-rust_install_racer: false
-rust_install_rls: false
+rustup_components: []
+rustup_default_toolchain: stable
+rustup_toolchains: [stable]
