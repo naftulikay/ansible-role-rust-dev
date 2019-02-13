@@ -13,6 +13,7 @@
 - name: install utility packages
   include_tasks: utility-packages.yml
 
+# FIXME this is bad, just stdout -> sh -c 
 - name: fetch rustup installer
   get_url:
     url: https://sh.rustup.rs
@@ -78,10 +79,3 @@
     name: "{{ rust_c_compiler_package }}"
     state=: present
   become: true
-
-- name: remove temp installer
-  file: name="{{ rustup_tmp_installer }}" state=absent
-
-- name: install code completion tools
-  include_tasks: code-completion.yml
-  when:  rust_code_completion | default(true) | bool
