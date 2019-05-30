@@ -1,108 +1,21 @@
 ---
 - name: fail when user is not defined
-  fail: msg="rust_user is not defined or empty, it must be set."
+  fail:
+    msg: "rust_user is not defined or empty, it must be set."
   when: (rust_user is not defined) or (not rust_user)
 
-# load per-os and per distro variables
-- name: load ubuntu distribution variables
-  include_vars: ubuntu/common.yml
-  when: is_ubuntu_derivative
-
-- name: load ubuntu distribution release variables
-  include_vars: |-
-    {%- if is_ubuntu_trusty_derivative -%}
-      ubuntu/trusty.yml
-    {%- elif is_ubuntu_xenial_derivative -%}
-      ubuntu/xenial.yml
-    {%- endif -%}
-  when: is_ubuntu_derivative and (is_ubuntu_trusty_derivative or is_ubuntu_xenial_derivative)
-
 - name: load redhat distribution variables
-  include_vars: redhat/common.yml
-  when: is_redhat_derivative
+  include_vars: redhat.yml
+  when: is_redhat_derivative | bool
 
-- name: load redhat distribution release variables
-  include_vars: redhat/rhel7.yml
-  when: is_redhat_derivative
-
-- name: discover rust facts
-  include_tasks: discover/rust.yml
-
-- name: install utility packages
-  include_tasks: utility-packages.yml
-
-- name: fetch rustup installer
-  get_url:
-    url: https://sh.rustup.rs
-    dest: "{{ rustup_tmp_installer }}"
-    mode: "0755"
-  when: not rustup_installed
-
-- name: install rustup as the user
-  command: "{{ rustup_tmp_installer }} -y"
-  become: true
-  become_user: "{{ rust_user }}"
-  when: not rustup_installed
-
-- name: set default toolchain
-  command: "rustup default stable"
-  environment:
-    PATH: "{{ rust_user_path }}"
-  when: not rustup_installed
-
-- name: generate rustup completions
-  command: "{{ rust_user_home }}/.cargo/bin/rustup completions bash"
-  become: true
-  become_user: "{{ rust_user }}"
-  register: rustup_completions
-  changed_when: false
-
-- name: write rustup completions
-  copy:
-    content: "{{ rustup_completions.stdout }}"
-    dest: /etc/bash_completion.d/rustup
-    mode: "0755"
-    owner: root
-    group: root
-  become: true
-
-- name: establish connection type
-  set_fact:
-    is_connection_local: |-
-      {%- if ansible_connection == "local" -%}
-        true
-      {%- else -%}
-        false
-      {%- endif -%}
-
-- name: sync man pages (local)
-  synchronize:
-    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
-    dest: "/usr/local/share/man/man1/"
-  when: is_connection_local
-  become: true
-
-- name: sync man pages (remote)
-  synchronize:
-    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
-    dest: "/usr/local/share/man/man1/"
-  delegate_to: "{{ inventory_hostname }}"
-  when: not is_connection_local
-  become: true
-
-
-- name: install c compiler
-  package: name="{{ rust_c_compiler_package }}" state=present
-  become: true
-
-- name: install additional system packages
-  package: name="{{ item }}" state=present
-  with_items: "{{ rust_addtl_system_packages }}"
-  become: true
-
-- name: remove temp installer
-  file: name="{{ rustup_tmp_installer }}" state=absent
-
-- name: install code completion tools
-  include_tasks: code-completion.yml
-  when:  rust_code_completion | default(true) | bool
+- name: execute tasks
+  include_tasks: "{{ include_task_item }}"
+  loop:
+    - include/00-facts.yml
+    - include/10-apt-refresh.yml
+    - include/20-packages.yml
+    - include/30-rustup.yml
+    - include/50-rls.yml
+    - include/90-profile.yml
+  loop_control:
+    loop_var: include_task_item

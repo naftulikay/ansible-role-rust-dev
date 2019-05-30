@@ -1,0 +1,28 @@
+---
+- name: install git
+  package: name=git state=present
+  become: true
+
+- name: install curl
+  package: name=curl state=present
+  become: true
+
+- name: install rsync
+  package: name=rsync state=present
+  become: true
+
+- name: install ssh client
+  package:
+    name: "{{ ssh_package_name }}"
+    state: present
+  become: true
+
+- name: install c compiler
+  package: name=gcc state=present
+  become: true
+
+- name: install additional system packages
+  package:
+    name: "{{ rust_addtl_system_packages }}"
+    state: present
+  become: true

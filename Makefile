@@ -1,35 +1,20 @@
 #!/usr/bin/make -f
 
-.DEFAULT_GOAL := apply
-.PHONY: apply
-
-DEFAULT_IMAGE:=centos7
-IMAGE:=$(shell echo "$${IMAGE:-$(DEFAULT_IMAGE)}")
+SHELL:=$(shell which bash)
 
 clean:
-	@docker-compose rm -fs $(IMAGE)
+	@docker-compose down
 
 start:
-	@docker-compose up -d $(IMAGE)
+	@docker-compose up -d
 
-shell: start
-	@docker exec -it $(IMAGE) bash
+pip:
+	@pip install -q $(shell test -z "$$TRAVIS" && echo "--user") -r requirements.txt ; \
 
-test: start
-	@docker exec $(IMAGE) ansible --version
-	@docker exec $(IMAGE) wait-for-boot
-	@docker exec $(IMAGE) ansible-galaxy install -r /etc/ansible/roles/default/tests/requirements.yml
-	@docker exec $(IMAGE) env ANSIBLE_FORCE_COLOR=yes \
-		ansible-playbook $(shell echo $$ANSIBLE_ARGS) /etc/ansible/roles/default/tests/playbook.yml
+install: pip
 
-prepare-apply:
-	@mkdir -p target/ .ansible/galaxy-roles
-	@rsync --exclude=.ansible/galaxy-roles -a ./ .ansible/galaxy-roles/rust-dev/
-	@ansible-galaxy install -p .ansible/galaxy-roles -r tests/requirements.yml
+unittest: pip
+	@if [ -e tests.py ]; then python tests.py -vvv ; fi
 
-
-apply: prepare-apply
-	@ansible-playbook -i localhost, -c local --ask-become-pass local.yml
-
-apply-ssh: prepare-apply
-	@ansible-playbook -i localhost, --ask-become-pass local.yml
+test: install start unittest
+	@make -C tests/ test

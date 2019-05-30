@@ -1,0 +1,69 @@
+---
+- name: fetch rustup installer
+  uri:
+    url: https://sh.rustup.rs
+    method: GET
+    status_code: 200
+    return_content: true
+  register: rustup_installer_response
+  when: not (rustup_is_installed | bool)
+
+- name: install rustup as the user
+  command: sh -s -- -y --no-modify-path
+  args:
+    stdin: "{{ rustup_installer_response.content }}"
+  become: true
+  become_user: "{{ rust_user }}"
+  when: not (rustup_is_installed | bool)
+
+- name: set default toolchain
+  command: "rustup default stable-x86_64-unknown-linux-gnu"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  when: not (rustup_is_installed | bool)
+
+- name: generate rustup completions
+  command: "{{ rust_user_home }}/.cargo/bin/rustup completions bash"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  become: true
+  become_user: "{{ rust_user }}"
+  register: rustup_completions
+  changed_when: false
+
+- name: write rustup completions
+  copy:
+    content: "{{ rustup_completions.stdout }}"
+    dest: /etc/bash_completion.d/rustup
+    mode: "0755"
+    owner: root
+    group: root
+  become: true
+
+- name: create man path
+  file:
+    path: "{{ rust_user_home }}/.local/share/man/man1"
+    state: directory
+    owner: "{{ rust_user }}"
+    group: "{{ rust_user }}"
+    recurse: true
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: install man pages (local)
+  synchronize:
+    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
+    dest: "{{ rust_user_home }}/.local/share/man/man1/"
+  delegate_to: 127.0.0.1
+  when: ansible_connection == "local"
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: install man pages (remote)
+  synchronize:
+    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
+    dest: "{{ rust_user_home }}/.local/share/man/man1/"
+  delegate_to: "{{ inventory_hostname }}"
+  when: ansible_connection != "local"
+  become: true
+  become_user: "{{ rust_user }}"

@@ -1,0 +1,8 @@
+---
+- name: install rls
+  command: rustup component add rls rust-analysis rust-src
+  environment:
+    PATH: "{{ rust_user_path }}"
+  when: not (rls_is_installed | bool)
+  become: true
+  become_user: "{{ rust_user }}"

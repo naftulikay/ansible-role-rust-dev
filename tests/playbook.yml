@@ -1,48 +1,11 @@
 ---
-- name: setup
-  hosts: localhost
-  vars:
-    container_user: docker
-  tasks:
-    - name: create user
-      user: name={{ container_user }} comment="Container User" state=present
-
-# install with defaults (no racer, no rls)
-- name: build (default)
-  hosts: localhost
+- name: test
+  hosts: all
   roles:
     - role: default
-      rust_user: docker
-
-# test that racer and rls are not installed
-- name: test (default)
-  hosts: localhost
-  roles:
-    - role: degoss
-      degoss_clean: false
-      degoss_debug: true
+      rust_user: container
+    - role: naftulikay.degoss
       goss_file: goss.yml
       goss_addtl_dirs: [goss.d]
-      goss_env_vars: {}
-
-# install with racer and rls
-- name: build (with racer/rls)
-  hosts: localhost
-  roles:
-    - role: default
-      rust_user: docker
-      rust_install_racer: true
-      rust_install_rls: true
-
-- name: test (with racer/rls)
-  hosts: localhost
-  vars: {}
-  roles:
-    - role: degoss
-      degoss_clean: false
-      degoss_debug: true
-      goss_file: goss.yml
-      goss_addtl_dirs: [goss.d]
-      goss_env_vars:
-        INSTALL_RACER: true
-        INSTALL_RLS: true
+      goss_variables:
+        user: container

@@ -1,8 +1,6 @@
 ---
 package:
-  'gcc':
-    installed: true
-
   'curl': { installed: true }
+  'gcc': { installed: true }
   'git': { installed: true }
   'rsync': { installed: true }
