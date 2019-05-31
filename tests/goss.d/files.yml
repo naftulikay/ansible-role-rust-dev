@@ -1,17 +1,14 @@
 ---
 file:
-  '/home/docker/.rustup': { exists: true }
-  '/home/docker/.cargo': { exists: true }
-  '/home/docker/.cargo/bin/cargo': { exists: true }
-  '/home/docker/.cargo/bin/rustc': { exists: true }
+  '/home/{{ .Vars.user }}/.rustup': { exists: true }
+  '/home/{{ .Vars.user }}/.cargo': { exists: true }
+  '/home/{{ .Vars.user }}/.cargo/bin/cargo': { exists: true }
+  '/home/{{ .Vars.user }}/.cargo/bin/rustc': { exists: true }
+  '/home/{{ .Vars.user }}/.cargo/bin/rls': { exists: true }
+  '/home/{{ .Vars.user }}/.local/share/man/man1/cargo.1': { exists: true }
+  '/home/{{ .Vars.user }}/.local/share/man/man1/rustc.1': { exists: true }
 
-{{ if eq (getEnv "INSTALL_RACER" "false") "true" }}
-  '/home/docker/.cargo/bin/racer': { exists: true }
-{{ end }}
-
-{{ if eq (getEnv "INSTALL_RLS" "false") "true" }}
-  '/home/docker/.cargo/bin/rls': { exists: true }
-{{ end }}
-
-  '/usr/local/share/man/man1/cargo.1': { exists: true }
-  '/usr/local/share/man/man1/rustc.1': { exists: true }
+  '/etc/profile.d/rust.sh':
+    exists: true
+    contains:
+      - export PATH="$HOME/.cargo/bin:$PATH

@@ -1,0 +1,6 @@
+---
+command:
+  "sudo -Hu {{ .Vars.user }} bash -lc 'echo $PATH'":
+    exit-status: 0
+    stdout:
+      - /home/container/.cargo/bin

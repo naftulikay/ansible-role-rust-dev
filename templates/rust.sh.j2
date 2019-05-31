@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function __inject_path() {
+  local is_present=n
+
+  echo "$PATH" | tr ':' '\n' | while read path_component ; do
+    if [ "$path_component" == "$HOME/.cargo/bin" ]; then
+      is_present=y
+      break
+    fi
+  done
+
+  if [ "$is_present" == "n" ]; then
+    export PATH="$HOME/.cargo/bin:$PATH"
+  fi
+}
+
+__inject_path
+unset __inject_path

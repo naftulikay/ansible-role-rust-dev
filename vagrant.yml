@@ -1,24 +1,8 @@
 ---
-- name: configure vagrant
+- name: build
   hosts: all
   become: true
-  vars:
-    role_name: rust-dev
   roles:
     - role: vagrant-docker
-
-  tasks:
-    - name: be an adult
-      selinux: state=enforcing policy=targeted
-
-    - name: create ansible directories
-      file: path={{ item }} state=directory owner=root group=root mode=0755
-      with_items:
-        - /etc/ansible/
-        - /etc/ansible/roles
-
-    - name: create symlinks
-      file: src={{ item.src }} dest={{ item.dest }} state=link force=yes owner=root group=root
-      with_items:
-        - { src: "/vagrant", dest: "/etc/ansible/roles/{{ role_name }}" }
-        - { src: "/vagrant/ansible.cfg", dest: "/etc/ansible/ansible.cfg" }
+    - role: vagrant-python-dev
+      python_version: 3.6.8

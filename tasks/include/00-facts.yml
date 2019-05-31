@@ -1,0 +1,41 @@
+---
+- name: get rust user home directory
+  command: "bash -ls"
+  args:
+    stdin: "cd && pwd"
+  become: true
+  become_user: "{{ rust_user }}"
+  changed_when: false
+  register: rust_user_home_check
+
+- name: set rust user home directory
+  set_fact:
+    rust_user_home: "{{ rust_user_home_check.stdout_lines | first }}"
+
+- name: set rust user path
+  set_fact:
+    rust_user_path: "{{ rust_user_home }}/.cargo/bin:{{ rust_user_home }}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+- name: check if rustup is installed
+  stat:
+    path: "{{ rust_user_home_check.stdout_lines | first }}/.rustup"
+  register: rustup_directory_check
+  become: true
+  changed_when: false
+  failed_when: false
+
+- name: set rustup status
+  set_fact:
+    rustup_is_installed: "{{ rustup_directory_check.stat.exists }}"
+
+- name: check if rls is installed
+  stat:
+    path: "{{ rust_user_home }}/.cargo/bin/rls"
+  register: rls_binary_check
+  become: true
+  changed_when: false
+  failed_when: false
+
+- name: set rls status
+  set_fact:
+    rls_is_installed: "{{ rls_binary_check.stat.exists }}"
