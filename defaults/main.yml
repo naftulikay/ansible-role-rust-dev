@@ -1,7 +1,3 @@
 ---
-curl_package_name: curl
-rsync_package_name: rsync
 rust_addtl_system_packages: []
-rust_c_compiler_package: gcc
-rustup_default_toolchain: stable-x86_64-unknown-linux-gnu
 ssh_package_name: openssh-client
