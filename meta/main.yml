@@ -15,7 +15,7 @@ galaxy_info:
     - name: Ubuntu
       versions: [bionic, xenial]
 
-  galaxy_tags: [rust,rust-lang]
+  galaxy_tags: [rust,rustlang]
 
 dependencies:
   - role: naftulikay.base
