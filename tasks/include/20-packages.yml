@@ -21,6 +21,17 @@
   package: name=gcc state=present
   become: true
 
+- name: install musl packages
+  package:
+    name: "{{ item }}"
+    state: present
+  when: rust_dev_include_musl and is_ubuntu_derivative
+  become: true
+  loop:
+    - musl
+    - musl-dev
+    - musl-tools
+
 - name: install additional system packages
   package:
     name: "{{ rust_addtl_system_packages }}"
