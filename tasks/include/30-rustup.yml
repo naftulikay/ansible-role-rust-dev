@@ -22,7 +22,17 @@
     PATH: "{{ rust_user_path }}"
   when: not (rustup_is_installed | bool)
 
-# install man pages
+- name: install musl toolchain
+  command: "rustup target add x86_64-unknown-linux-musl"
+  args:
+    creates: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-musl"
+  environment:
+    PATH: "{{ rust_user_path }}"
+  become: true
+  become_user: "{{ rust_user }}"
+  when: rust_dev_include_musl
+
+  # install man pages
 - name: create man path
   file:
     path: "{{ rust_user_home }}/.local/share/man/man1"
@@ -74,4 +84,3 @@
   become: true
   become_user: "{{ rust_user }}"
   changed_when: false
-
