@@ -22,6 +22,34 @@
     PATH: "{{ rust_user_path }}"
   when: not (rustup_is_installed | bool)
 
+# install man pages
+- name: create man path
+  file:
+    path: "{{ rust_user_home }}/.local/share/man/man1"
+    state: directory
+    owner: "{{ rust_user }}"
+    group: "{{ rust_user }}"
+    recurse: true
+  become: true
+  become_user: "{{ rust_user }}"
+
+- name: install man pages
+  command: rsync -a "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/" "{{ rust_user_home }}/.local/share/man/man1/"
+  become: true
+  become_user: "{{ rust_user }}"
+  changed_when: false
+
+# install bash completions
+- name: create bash completion path
+  file:
+    path: "{{ rust_user_home }}/.local/share/bash-completion/completions"
+    state: directory
+    owner: "{{ rust_user }}"
+    group: "{{ rust_user }}"
+    recurse: true
+  become: true
+  become_user: "{{ rust_user }}"
+
 - name: generate rustup completions
   command: "{{ rust_user_home }}/.cargo/bin/rustup completions bash"
   environment:
@@ -34,36 +62,16 @@
 - name: write rustup completions
   copy:
     content: "{{ rustup_completions.stdout }}"
-    dest: /etc/bash_completion.d/rustup
-    mode: "0755"
-    owner: root
-    group: root
-  become: true
-
-- name: create man path
-  file:
-    path: "{{ rust_user_home }}/.local/share/man/man1"
-    state: directory
+    dest: "{{ rust_user_home }}/.local/share/bash-completion/completions/rustup"
+    mode: "0644"
     owner: "{{ rust_user }}"
     group: "{{ rust_user }}"
-    recurse: true
   become: true
   become_user: "{{ rust_user }}"
 
-- name: install man pages (local)
-  synchronize:
-    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
-    dest: "{{ rust_user_home }}/.local/share/man/man1/"
-  delegate_to: 127.0.0.1
-  when: ansible_connection == "local"
+- name: install bash completions
+  command: rsync -a "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/etc/bash_completion.d/" "{{ rust_user_home }}/.local/share/bash-completion/completions/"
   become: true
   become_user: "{{ rust_user }}"
+  changed_when: false
 
-- name: install man pages (remote)
-  synchronize:
-    src: "{{ rust_user_home }}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/man/man1/"
-    dest: "{{ rust_user_home }}/.local/share/man/man1/"
-  delegate_to: "{{ inventory_hostname }}"
-  when: ansible_connection != "local"
-  become: true
-  become_user: "{{ rust_user }}"
