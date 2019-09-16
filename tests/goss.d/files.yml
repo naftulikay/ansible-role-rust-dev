@@ -7,6 +7,8 @@ file:
   '/home/{{ .Vars.user }}/.cargo/bin/rls': { exists: true }
   '/home/{{ .Vars.user }}/.local/share/man/man1/cargo.1': { exists: true }
   '/home/{{ .Vars.user }}/.local/share/man/man1/rustc.1': { exists: true }
+  '/home/{{ .Vars.user }}/.local/share/bash-completion/completions/cargo': { exists: true }
+  '/home/{{ .Vars.user }}/.local/share/bash-completion/completions/rustup': { exists: true }
 
   '/etc/profile.d/rust.sh':
     exists: true
